@@ -29,4 +29,8 @@ public class User {
 
     @ManyToMany
     Set<Role> roles;
+
+    String address;
+    String phone;
+    String email;
 }
