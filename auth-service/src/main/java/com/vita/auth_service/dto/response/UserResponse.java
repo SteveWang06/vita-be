@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.util.Set;
 
 @Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -18,4 +20,7 @@ public class UserResponse {
     String lastName;
     LocalDate dob;
     Set<RoleResponse> roles;
+    String address;
+    String phone;
+    String email;
 }

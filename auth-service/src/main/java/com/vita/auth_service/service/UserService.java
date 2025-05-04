@@ -9,9 +9,11 @@ import com.vita.auth_service.entity.Role;
 import com.vita.auth_service.entity.User;
 import com.vita.auth_service.exception.AppException;
 import com.vita.auth_service.exception.ErrorCode;
+import com.vita.auth_service.mapper.ProfileMapper;
 import com.vita.auth_service.mapper.UserMapper;
 import com.vita.auth_service.repository.RoleRepository;
 import com.vita.auth_service.repository.UserRepository;
+import com.vita.auth_service.repository.httpclient.UserClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -35,6 +37,8 @@ public class UserService {
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    UserClient userClient;
+    ProfileMapper profileMapper;
 
     public UserResponse createUser(UserCreationRequest request) {
         User user = userMapper.toUser(request);
@@ -45,11 +49,11 @@ public class UserService {
 
         user.setRoles(roles);
 
-        try {
-            user = userRepository.save(user);
-        } catch (DataIntegrityViolationException exception) {
-            throw new AppException(ErrorCode.USER_EXISTED);
-        }
+        user = userRepository.save(user);
+        var profileRequest = profileMapper.toProfileCreationRequest(request);
+        profileRequest.setUserId(user.getId());
+
+        userClient.createUser(profileRequest);
 
         return userMapper.toUserResponse(user);
     }

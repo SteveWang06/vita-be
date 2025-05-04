@@ -12,6 +12,9 @@ import org.mapstruct.MappingTarget;
 public interface UserMapper {
     User toUser(UserCreationRequest request);
 
+    @Mapping(target = "address", source = "address")
+    @Mapping(target = "phone", source = "phone")
+    @Mapping(target = "email", source = "email")
     UserResponse toUserResponse(User user);
 
     @Mapping(target = "roles", ignore = true)
