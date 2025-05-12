@@ -23,3 +23,7 @@ jwt:
 app:
   services:
     user: http://localhost:8081/user
+
+  admin:
+    username: admin
+    password: admin

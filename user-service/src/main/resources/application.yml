@@ -6,15 +6,13 @@ server:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/user_service_db
-    username: userservice
-    password: password
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/user_service_db}
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:password}
+
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-    application:
-      name: user-service
+

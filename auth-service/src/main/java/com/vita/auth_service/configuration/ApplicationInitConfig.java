@@ -2,10 +2,13 @@ package com.vita.auth_service.configuration;
 
 
 import com.vita.auth_service.constant.PredefinedRole;
+import com.vita.auth_service.dto.request.UserCreationRequest;
 import com.vita.auth_service.entity.Role;
 import com.vita.auth_service.entity.User;
+import com.vita.auth_service.mapper.ProfileMapper;
 import com.vita.auth_service.repository.RoleRepository;
 import com.vita.auth_service.repository.UserRepository;
+import com.vita.auth_service.repository.httpclient.UserClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,25 +16,24 @@ import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashSet;
 
-@Configuration
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
+@Configuration
+@EnableConfigurationProperties(AdminProperties.class)
 public class ApplicationInitConfig {
 
     PasswordEncoder passwordEncoder;
-
-    @NonFinal
-    static final String ADMIN_USER_NAME = "admin";
-
-    @NonFinal
-    static final String ADMIN_PASSWORD = "admin";
+    UserClient userClient;
+    ProfileMapper profileMapper;
+    AdminProperties adminProperties;
 
     @Bean
     @ConditionalOnProperty(
@@ -39,9 +41,11 @@ public class ApplicationInitConfig {
             value = "datasource.driverClassName",
             havingValue = "com.mysql.cj.jdbc.Driver")
     ApplicationRunner applicationRunner(UserRepository userRepository, RoleRepository roleRepository) {
-        log.info("Initializing application.....");
         return args -> {
-            if (userRepository.findByUsername(ADMIN_USER_NAME).isEmpty()) {
+            String adminUsername = adminProperties.getUsername();
+            String adminPassword = adminProperties.getPassword();
+
+            if (userRepository.findByUsername(adminUsername).isEmpty()) {
                 roleRepository.save(Role.builder()
                         .name(PredefinedRole.USER_ROLE)
                         .description("User role")
@@ -56,15 +60,28 @@ public class ApplicationInitConfig {
                 roles.add(adminRole);
 
                 User user = User.builder()
-                        .username(ADMIN_USER_NAME)
-                        .password(passwordEncoder.encode(ADMIN_PASSWORD))
+                        .username(adminUsername)
+                        .password(passwordEncoder.encode(adminPassword))
                         .roles(roles)
                         .build();
 
-                userRepository.save(user);
-                log.warn("admin user has been created with default password: admin, please change it");
+                user = userRepository.save(user);
+
+                log.warn("Admin user created with default password. Please change it immediately.");
+
+                UserCreationRequest profileData = UserCreationRequest.builder()
+                        .username(adminUsername)
+                        .firstName("Admin")
+                        .lastName("System")
+                        .email("admin@vita.com")
+                        .build();
+
+                var clientRequest = profileMapper.toProfileCreationRequest(profileData);
+                clientRequest.setUserId(user.getId());
+                userClient.createUser(clientRequest);
             }
-            log.info("Application initialization completed .....");
+
+            log.info("Application initialization completed.");
         };
     }
 }

@@ -5,6 +5,8 @@ import com.vita.user_service.repository.UserRepository;
 import com.vita.user_service.dto.request.UserCreationRequest;
 import com.vita.user_service.dto.response.UserResponse;
 import com.vita.user_service.mapper.UserProfileMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
     @Autowired
     private UserRepository userRepository;
 
@@ -21,6 +24,7 @@ public class UserService {
     private UserProfileMapper userProfileMapper;
 
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
+
         User user = userProfileMapper.toUserProfile(userCreationRequest);
         User savedUser = userRepository.save(user);
         return userProfileMapper.toUserProfileResponse(savedUser);
@@ -28,6 +32,7 @@ public class UserService {
 
     public UserResponse updateUser(String id, User updatedUser) {
         return userRepository.findById(id).map(user -> {
+            user.setUsername(updatedUser.getUsername());
             user.setFirstName(updatedUser.getFirstName());
             user.setLastName(updatedUser.getLastName());
             user.setEmail(updatedUser.getEmail());
