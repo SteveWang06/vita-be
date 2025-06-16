@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="UserServiceApplication" type="Application" factoryName="Application">
-    <option name="ALTERNATIVE_JRE_PATH" value="openjdk-22" />
+    <option name="ALTERNATIVE_JRE_PATH" value="corretto-21 (2)" />
     <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="true" />
     <option name="MAIN_CLASS_NAME" value="com.vita.user_service.UserServiceApplication" />
     <module name="user-service" />
