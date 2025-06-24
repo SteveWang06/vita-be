@@ -58,16 +58,46 @@ public class AuthenticationService {
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
-        boolean isValid = true;
 
         try {
-            verifyToken(token, false);
-        } catch (AppException e) {
-            isValid = false;
-        }
+            SignedJWT signedJWT = verifyToken(token, false);
 
-        return IntrospectResponse.builder().valid(isValid).build();
+            JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
+
+            // Lấy userId dưới dạng String, không ép kiểu Long
+            String userId = null;
+            Object userIdClaim = claims.getClaim("userId");
+            if (userIdClaim != null) {
+                userId = userIdClaim.toString();
+            }
+
+            String username = claims.getSubject();
+            String scope = claims.getStringClaim("scope");
+
+            String role = null;
+            if (scope != null && !scope.isEmpty()) {
+                String[] scopes = scope.split(" ");
+                for (String s : scopes) {
+                    if (s.startsWith("ROLE_")) {
+                        role = s;
+                        break;
+                    }
+                }
+            }
+
+            return IntrospectResponse.builder()
+                    .valid(true)
+                    .userId(userId)
+                    .username(username)
+                    .role(role)
+                    .build();
+
+        } catch (AppException e) {
+            return IntrospectResponse.builder().valid(false).build();
+        }
     }
+
+
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
@@ -131,6 +161,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
+                .claim("userId", user.getId())      // <-- Thêm userId ở đây
                 .claim("scope", buildScope(user))
                 .build();
 
@@ -146,6 +177,7 @@ public class AuthenticationService {
             throw new RuntimeException(e);
         }
     }
+
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
