@@ -10,18 +10,8 @@ import org.mapstruct.Mapping;
 public interface UserProfileMapper {
 
 
-    @Mapping(target = "id", ignore = true) // id được generate nên bỏ qua
-    @Mapping(source = "userId", target = "userId")
-    @Mapping(source = "username", target = "username")
-    @Mapping(source = "firstName", target = "firstName")
-    @Mapping(source = "lastName", target = "lastName")
-    @Mapping(source = "email", target = "email")
-    @Mapping(source = "phone", target = "phone")
-    @Mapping(source = "address", target = "address")
-    @Mapping(source = "dob", target = "dob")
+    @Mapping(target = "id", ignore = true)
     User toUserProfile(UserCreationRequest request);
-
-
 
     @Mapping(source = "username", target = "username")
     @Mapping(source = "firstName", target = "firstName")
