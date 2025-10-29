@@ -1,0 +1,836 @@
+{
+	"info": {
+		"_postman_id": "vita-backend-api-collection",
+		"name": "Vita Backend API Collection (via API Gateway)",
+		"description": "Complete API collection for Vita Backend microservices - All APIs are called through API Gateway for centralized routing, authentication, and monitoring",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Auth Service",
+			"item": [
+				{
+					"name": "Authentication",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"admin@vita.com\",\n  \"password\": \"admin123\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/user/token",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"user",
+										"token"
+									]
+								},
+								"description": "Login with username and password to get JWT token (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Introspect Token",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"token\": \"{{jwt_token}}\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/user/introspect",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"user",
+										"introspect"
+									]
+								},
+								"description": "Validate and get information from JWT token (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh Token",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"token\": \"{{jwt_token}}\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/user/refresh",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"user",
+										"refresh"
+									]
+								},
+								"description": "Refresh JWT token (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"token\": \"{{jwt_token}}\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/user/logout",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"user",
+										"logout"
+									]
+								},
+								"description": "Logout and invalidate JWT token (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Validate Token",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/user/validate",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"user",
+										"validate"
+									]
+								},
+								"description": "Validate JWT token (via API Gateway)"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "User Management",
+					"item": [
+						{
+							"name": "Create User",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"testuser\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"123 Test St\",\n  \"dob\": \"1990-01-01\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/users",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"users"
+									]
+								},
+								"description": "Create a new user account (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Create Admin User",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"admin2\",\n  \"email\": \"admin2@vita.com\",\n  \"password\": \"admin123\",\n  \"firstName\": \"Admin\",\n  \"lastName\": \"Two\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"456 Admin St\",\n  \"dob\": \"1985-01-01\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/users/admin",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"users",
+										"admin"
+									]
+								},
+								"description": "Create a new admin user account (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Get My Info",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/users/me",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"users",
+										"me"
+									]
+								},
+								"description": "Get current user information (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Update User",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"username\": \"updateduser\",\n  \"email\": \"updated@example.com\",\n  \"firstName\": \"Updated\",\n  \"lastName\": \"User\",\n  \"phone\": \"+0987654321\",\n  \"address\": \"789 Updated St\",\n  \"dob\": \"1995-01-01\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/users/{{user_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"users",
+										"{{user_id}}"
+									]
+								},
+								"description": "Update user information (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Users (Admin Only)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/users",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"users"
+									]
+								},
+								"description": "Get all users (requires ADMIN role) (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Get User by ID (Admin Only)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/users/{{user_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"users",
+										"{{user_id}}"
+									]
+								},
+								"description": "Get user by ID (requires ADMIN role) (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete User (Admin Only)",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/users/{{user_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"users",
+										"{{user_id}}"
+									]
+								},
+								"description": "Delete user by ID (requires ADMIN role) (via API Gateway)"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Role Management",
+					"item": [
+						{
+							"name": "Create Role",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"MODERATOR\",\n  \"description\": \"Moderator role with limited admin privileges\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/roles",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"roles"
+									]
+								},
+								"description": "Create a new role (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Roles",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/roles",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"roles"
+									]
+								},
+								"description": "Get all available roles (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Role",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/roles/{{role_name}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"roles",
+										"{{role_name}}"
+									]
+								},
+								"description": "Delete a role by name (via API Gateway)"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Admin Management",
+					"item": [
+						{
+							"name": "Check Admin Exists",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/admin/check",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"admin",
+										"check"
+									]
+								},
+								"description": "Check if admin account exists (via API Gateway)"
+							},
+							"response": []
+						},
+						{
+							"name": "List Admin Users",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/auth/admin/list",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"auth",
+										"admin",
+										"list"
+									]
+								},
+								"description": "List all admin users (requires ADMIN role) (via API Gateway)"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User Service",
+			"item": [
+				{
+					"name": "Create User Profile",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"userId\": \"{{user_id}}\",\n  \"username\": \"testuser\",\n  \"firstName\": \"Test\",\n  \"lastName\": \"User\",\n  \"email\": \"test@example.com\",\n  \"phone\": \"+1234567890\",\n  \"address\": \"123 Test St\",\n  \"dob\": \"1990-01-01\"\n}"
+						},
+						"url": {
+							"raw": "{{api_gateway_url}}/api/v1/users",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users"
+							]
+						},
+						"description": "Create user profile in user service (via API Gateway)"
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_gateway_url}}/api/v1/users/{{user_id}}",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"users",
+								"{{user_id}}"
+							]
+						},
+						"description": "Get user profile by ID (via API Gateway)"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Post Service",
+			"item": [
+				{
+					"name": "Create Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Test Post Title\",\n  \"content\": \"This is a test post content for testing purposes.\"\n}"
+						},
+						"url": {
+							"raw": "{{api_gateway_url}}/api/v1/post/create",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"post",
+								"create"
+							]
+						},
+						"description": "Create a new post (via API Gateway). Requires authentication - JWT token will be validated and user ID will be automatically extracted from the token."
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Posts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_gateway_url}}/api/v1/post",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"post"
+							]
+						},
+						"description": "Get all posts (via API Gateway). This is a public endpoint - no authentication required."
+					},
+					"response": []
+				},
+				{
+					"name": "Get Post by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"post",
+								"{{post_id}}"
+							]
+						},
+						"description": "Get post by ID (via API Gateway). This is a public endpoint - no authentication required."
+					},
+					"response": []
+				},
+				{
+					"name": "Update Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Updated Post Title\",\n  \"content\": \"This is an updated post content.\"\n}"
+						},
+						"url": {
+							"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"post",
+								"{{post_id}}"
+							]
+						},
+						"description": "Update post by ID (via API Gateway). Requires authentication - JWT token will be validated and user ID will be automatically extracted. Only the post author can update the post."
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Post",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{jwt_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"post",
+								"{{post_id}}"
+							]
+						},
+						"description": "Delete post by ID (via API Gateway). Requires authentication - JWT token will be validated."
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "API Gateway",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_gateway_url}}/actuator/health",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"actuator",
+								"health"
+							]
+						},
+						"description": "Check API Gateway health status"
+					},
+					"response": []
+				},
+				{
+					"name": "Cache Stats",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{api_gateway_url}}/actuator/cache-stats",
+							"host": [
+								"{{api_gateway_url}}"
+							],
+							"path": [
+								"actuator",
+								"cache-stats"
+							]
+						},
+						"description": "Get cache statistics from API Gateway"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "api_gateway_url",
+			"value": "http://localhost:8080",
+			"type": "string",
+			"description": "API Gateway URL - All API calls go through this gateway"
+		},
+		{
+			"key": "auth_service_url",
+			"value": "http://localhost:8082/auth",
+			"type": "string",
+			"description": "Direct Auth Service URL (for reference only - use API Gateway instead)"
+		},
+		{
+			"key": "user_service_url",
+			"value": "http://localhost:8081",
+			"type": "string",
+			"description": "Direct User Service URL (for reference only - use API Gateway instead)"
+		},
+		{
+			"key": "post_service_url",
+			"value": "http://localhost:8083",
+			"type": "string",
+			"description": "Direct Post Service URL (for reference only - use API Gateway instead)"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string",
+			"description": "JWT token received after successful login"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string",
+			"description": "User ID for testing user-specific operations"
+		},
+		{
+			"key": "role_name",
+			"value": "MODERATOR",
+			"type": "string",
+			"description": "Role name for testing role operations"
+		},
+		{
+			"key": "post_id",
+			"value": "",
+			"type": "string",
+			"description": "Post ID for testing post operations"
+		}
+	]
+}
