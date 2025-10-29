@@ -6,17 +6,26 @@ import lombok.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "posts")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Post {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     private String userId;
     private String title;
     private String content;
     private LocalDateTime createdAt;
+    private String updatedBy;
+    private LocalDateTime updatedAt;
+
+    @PrePersist
+    private void generateId() {
+        if (this.id == null) {
+            this.id = java.util.UUID.randomUUID().toString();
+        }
+    }
 }
