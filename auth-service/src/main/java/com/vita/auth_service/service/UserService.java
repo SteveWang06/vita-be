@@ -17,7 +17,10 @@ import com.vita.auth_service.repository.httpclient.UserClient;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,32 +40,78 @@ public class UserService {
     RoleRepository roleRepository;
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
+    @Autowired(required = false)
     UserClient userClient;
+    @Autowired(required = false)
     ProfileMapper profileMapper;
+    
+    @NonFinal
+    boolean userServiceEnabled = true; // Default value
+    
+    @Value("${app.services.user-service-enabled:true}")
+    public void setUserServiceEnabled(boolean userServiceEnabled) {
+        this.userServiceEnabled = userServiceEnabled;
+    }
 
     public UserResponse createUser(UserCreationRequest request) {
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         HashSet<Role> roles = new HashSet<>();
-        roleRepository.findById(PredefinedRole.USER_ROLE).ifPresent(roles::add);
+        roleRepository.findByName(PredefinedRole.USER_ROLE).ifPresent(roles::add);
 
         user.setRoles(roles);
 
         user = userRepository.save(user);
-        var profileRequest = profileMapper.toProfileCreationRequest(request);
-        profileRequest.setUserId(user.getId());
+        
+        if (userServiceEnabled && userClient != null && profileMapper != null) {
+            try {
+                var profileRequest = profileMapper.toProfileCreationRequest(request);
+                profileRequest.setUserId(user.getId());
+                userClient.createUser(profileRequest);
+                log.info("User profile created successfully in user-service for user: {}", user.getUsername());
+            } catch (Exception e) {
+                log.warn("Failed to create user profile in user-service for user: {}. Error: {}", user.getUsername(), e.getMessage());
+            }
+        } else {
+            log.info("User service integration disabled or dependencies not available, skipping profile creation for user: {}", user.getUsername());
+        }
 
-        userClient.createUser(profileRequest);
+        return userMapper.toUserResponse(user);
+    }
+
+    public UserResponse createAdminUser(UserCreationRequest request) {
+        User user = userMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        HashSet<Role> roles = new HashSet<>();
+        roleRepository.findByName(PredefinedRole.ADMIN_ROLE).ifPresent(roles::add);
+
+        user.setRoles(roles);
+
+        user = userRepository.save(user);
+        
+        if (userServiceEnabled && userClient != null && profileMapper != null) {
+            try {
+                var profileRequest = profileMapper.toProfileCreationRequest(request);
+                profileRequest.setUserId(user.getId());
+                userClient.createUser(profileRequest);
+                log.info("Admin user profile created successfully in user-service for user: {}", user.getUsername());
+            } catch (Exception e) {
+                log.warn("Failed to create admin user profile in user-service for user: {}. Error: {}", user.getUsername(), e.getMessage());
+            }
+        } else {
+            log.info("User service integration disabled or dependencies not available, skipping profile creation for admin user: {}", user.getUsername());
+        }
 
         return userMapper.toUserResponse(user);
     }
 
     public UserResponse getMyInfo() {
         var context = SecurityContextHolder.getContext();
-        String name = context.getAuthentication().getName();
+        String username = context.getAuthentication().getName();
 
-        User user = userRepository.findByUsername(name).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+        User user = userRepository.findByUsername(username).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         return userMapper.toUserResponse(user);
     }
@@ -72,10 +121,10 @@ public class UserService {
         User user = userRepository.findById(userId).orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
 
         userMapper.updateUser(user, request);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-
-        var roles = roleRepository.findAllById(request.getRoles());
-        user.setRoles(new HashSet<>(roles));
+        
+        if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
 
         return userMapper.toUserResponse(userRepository.save(user));
     }

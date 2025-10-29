@@ -35,6 +35,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import com.vita.auth_service.entity.Role;
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +66,6 @@ public class AuthenticationService {
 
             JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
 
-            // Lấy userId dưới dạng String, không ép kiểu Long
             String userId = null;
             Object userIdClaim = claims.getClaim("userId");
             if (userIdClaim != null) {
@@ -161,7 +162,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
-                .claim("userId", user.getId())      // <-- Thêm userId ở đây
+                .claim("userId", user.getId())
                 .claim("scope", buildScope(user))
                 .build();
 
@@ -204,15 +205,9 @@ public class AuthenticationService {
     }
 
     private String buildScope(User user) {
-        StringJoiner stringJoiner = new StringJoiner(" ");
-
-        if (!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getName());
-                if (!CollectionUtils.isEmpty(role.getPermissions()))
-                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
-            });
-
-        return stringJoiner.toString();
+        var roles = user.getRoles();
+        return roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(" "));
     }
 }

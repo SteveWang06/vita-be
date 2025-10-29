@@ -1,6 +1,7 @@
 package com.vita.auth_service.dto.request;
 
 import com.vita.auth_service.validator.DobConstraint;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,6 +17,9 @@ public class UserCreationRequest {
     @Size(min = 4, message = "USERNAME_INVALID")
     String username;
 
+    @Email(message = "INVALID_EMAIL")
+    String email;
+
     @Size(min = 6, message = "INVALID_PASSWORD")
     String password;
 
@@ -26,6 +30,5 @@ public class UserCreationRequest {
     LocalDate dob;
 
     String address;
-    String email;
     String phone;
 }
