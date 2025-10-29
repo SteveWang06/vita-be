@@ -1,10 +1,11 @@
 package com.vita.auth_service.service;
 
-
 import com.vita.auth_service.dto.request.RoleRequest;
 import com.vita.auth_service.dto.response.RoleResponse;
+import com.vita.auth_service.entity.Role;
+import com.vita.auth_service.exception.AppException;
+import com.vita.auth_service.exception.ErrorCode;
 import com.vita.auth_service.mapper.RoleMapper;
-import com.vita.auth_service.repository.PermissionRepository;
 import com.vita.auth_service.repository.RoleRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -21,17 +21,20 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class RoleService {
     RoleRepository roleRepository;
-    PermissionRepository permissionRepository;
     RoleMapper roleMapper;
 
-    public RoleResponse create(RoleRequest request) {
-        var role = roleMapper.toRole(request);
+    public RoleResponse createRole(RoleRequest request) {
+        if (roleRepository.existsByName(request.getName())) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
 
-        var permissions = permissionRepository.findAllById(request.getPermissions());
-        role.setPermissions(new HashSet<>(permissions));
+        Role role = Role.builder()
+                .name(request.getName())
+                .description(request.getDescription())
+                .build();
 
-        role = roleRepository.save(role);
-        return roleMapper.toRoleResponse(role);
+        Role savedRole = roleRepository.save(role);
+        return roleMapper.toRoleResponse(savedRole);
     }
 
     public List<RoleResponse> getAll() {

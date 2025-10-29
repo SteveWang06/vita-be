@@ -1,26 +1,26 @@
 package com.vita.auth_service.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
-import lombok.*;
-import lombok.experimental.FieldDefaults;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
-@Getter
-@Setter
+@Entity
+@Table(name = "roles")
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
 public class Role {
+
     @Id
-    String name;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
-    String description;
+    @Column(unique = true, nullable = false)
+    private String name;
 
-    @ManyToMany
-    Set<Permission> permissions;
+    @Column
+    private String description;
 }

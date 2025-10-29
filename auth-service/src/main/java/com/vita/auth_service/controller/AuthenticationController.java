@@ -51,9 +51,9 @@ public class AuthenticationController {
     public ResponseEntity<IntrospectResponse> validateToken(@RequestHeader("Authorization") String token)
             throws ParseException, JOSEException {
         System.out.println("Received token: " + token);
-        // Nếu token bắt đầu bằng "Bearer ", hãy cắt bỏ trước khi dùng
-        String pureToken = token.startsWith("Bearer ") ? token.substring(7) : token;
-        IntrospectRequest request = new IntrospectRequest(pureToken);
+        var request = IntrospectRequest.builder()
+                .token(token)
+                .build();
         IntrospectResponse result = authenticationService.introspect(request);
 
         return ResponseEntity.ok(result);

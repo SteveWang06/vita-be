@@ -3,8 +3,6 @@ package com.vita.auth_service.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.util.Set;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,5 +11,4 @@ import java.util.Set;
 public class RoleRequest {
     String name;
     String description;
-    Set<String> permissions;
 }

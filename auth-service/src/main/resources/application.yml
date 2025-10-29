@@ -1,0 +1,49 @@
+server:
+  port: 8082
+  servlet:
+    context-path: /auth
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/auth_service_db}
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+  security:
+    user:
+      name: ${DEFAULT_ADMIN_EMAIL:admin@vita.com}
+      password: ${DEFAULT_ADMIN_PASSWORD:admin123}
+
+# Admin account configuration
+app:
+  admin:
+    email: ${DEFAULT_ADMIN_EMAIL:admin@vita.com}
+    password: ${DEFAULT_ADMIN_PASSWORD:admin123}
+    role: ADMIN
+  services:
+    user: ${USER_SERVICE_URL:http://localhost:8081}
+    user-service-enabled: ${USER_SERVICE_ENABLED:true}
+
+# JWT configuration
+jwt:
+  signerKey: ${JWT_SIGNER_KEY:1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij}
+  valid-duration: ${JWT_VALID_DURATION:3600}
+  refreshable-duration: ${JWT_REFRESHABLE_DURATION:36000}
+
+# Logging configuration
+logging:
+  level:
+    com.vita.auth_service: INFO
+    org.springframework.security: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
