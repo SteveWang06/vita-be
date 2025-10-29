@@ -35,6 +35,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.StringJoiner;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import com.vita.auth_service.entity.Role;
 
 @Service
 @RequiredArgsConstructor
@@ -58,16 +60,45 @@ public class AuthenticationService {
 
     public IntrospectResponse introspect(IntrospectRequest request) throws JOSEException, ParseException {
         var token = request.getToken();
-        boolean isValid = true;
 
         try {
-            verifyToken(token, false);
-        } catch (AppException e) {
-            isValid = false;
-        }
+            SignedJWT signedJWT = verifyToken(token, false);
 
-        return IntrospectResponse.builder().valid(isValid).build();
+            JWTClaimsSet claims = signedJWT.getJWTClaimsSet();
+
+            String userId = null;
+            Object userIdClaim = claims.getClaim("userId");
+            if (userIdClaim != null) {
+                userId = userIdClaim.toString();
+            }
+
+            String username = claims.getSubject();
+            String scope = claims.getStringClaim("scope");
+
+            String role = null;
+            if (scope != null && !scope.isEmpty()) {
+                String[] scopes = scope.split(" ");
+                for (String s : scopes) {
+                    if (s.startsWith("ROLE_")) {
+                        role = s;
+                        break;
+                    }
+                }
+            }
+
+            return IntrospectResponse.builder()
+                    .valid(true)
+                    .userId(userId)
+                    .username(username)
+                    .role(role)
+                    .build();
+
+        } catch (AppException e) {
+            return IntrospectResponse.builder().valid(false).build();
+        }
     }
+
+
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
@@ -131,6 +162,7 @@ public class AuthenticationService {
                 .expirationTime(new Date(
                         Instant.now().plus(VALID_DURATION, ChronoUnit.SECONDS).toEpochMilli()))
                 .jwtID(UUID.randomUUID().toString())
+                .claim("userId", user.getId())
                 .claim("scope", buildScope(user))
                 .build();
 
@@ -146,6 +178,7 @@ public class AuthenticationService {
             throw new RuntimeException(e);
         }
     }
+
 
     private SignedJWT verifyToken(String token, boolean isRefresh) throws JOSEException, ParseException {
         JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
@@ -172,15 +205,9 @@ public class AuthenticationService {
     }
 
     private String buildScope(User user) {
-        StringJoiner stringJoiner = new StringJoiner(" ");
-
-        if (!CollectionUtils.isEmpty(user.getRoles()))
-            user.getRoles().forEach(role -> {
-                stringJoiner.add("ROLE_" + role.getName());
-                if (!CollectionUtils.isEmpty(role.getPermissions()))
-                    role.getPermissions().forEach(permission -> stringJoiner.add(permission.getName()));
-            });
-
-        return stringJoiner.toString();
+        var roles = user.getRoles();
+        return roles.stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(" "));
     }
 }

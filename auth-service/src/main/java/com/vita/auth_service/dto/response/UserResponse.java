@@ -3,12 +3,9 @@ package com.vita.auth_service.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.util.Set;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -16,6 +13,7 @@ import java.util.Set;
 public class UserResponse {
     String id;
     String username;
+    String email;
+    boolean enabled;
     Set<RoleResponse> roles;
-
 }

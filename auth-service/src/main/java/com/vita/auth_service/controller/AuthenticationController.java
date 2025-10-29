@@ -9,10 +9,8 @@ import com.vita.auth_service.service.AuthenticationService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -48,4 +46,18 @@ public class AuthenticationController {
         authenticationService.logout(request);
         return ApiResponse.<Void>builder().build();
     }
+
+    @GetMapping("/validate")
+    public ResponseEntity<IntrospectResponse> validateToken(@RequestHeader("Authorization") String token)
+            throws ParseException, JOSEException {
+        System.out.println("Received token: " + token);
+        var request = IntrospectRequest.builder()
+                .token(token)
+                .build();
+        IntrospectResponse result = authenticationService.introspect(request);
+
+        return ResponseEntity.ok(result);
+    }
+
+
 }
