@@ -43,6 +43,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
 
         return tokenValidationService.validateToken(token)
                 .flatMap(userInfo -> {
+                    log.info("Token validated successfully. UserId: {}, Username: {}, Role: '{}'", 
+                            userInfo.getUserId(), userInfo.getUsername(), userInfo.getRole());
+                    
                     ServerHttpRequest mutatedRequest = request.mutate()
                             .header("X-User-Id", userInfo.getUserId())
                             .header("X-User-Role", userInfo.getRole())

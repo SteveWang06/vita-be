@@ -566,156 +566,367 @@
 			"name": "Post Service",
 			"item": [
 				{
-					"name": "Create Post",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
+					"name": "Post Management",
+					"item": [
+						{
+							"name": "Create Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Test Post Title\",\n  \"content\": \"This is a test post content for testing purposes.\",\n  \"postTypeCode\": \"SHARE\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/create",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"create"
+									]
+								},
+								"description": "Create a new post (via API Gateway). Requires authentication - JWT token will be validated and user ID will be automatically extracted from the token. You can optionally specify postTypeId or postTypeCode."
+							},
+							"response": []
 						},
-						"method": "POST",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"Test Post Title\",\n  \"content\": \"This is a test post content for testing purposes.\"\n}"
+						{
+							"name": "Get All Posts",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post"
+									],
+									"query": [
+										{
+											"key": "postTypeId",
+											"value": "{{post_type_id}}",
+											"disabled": true,
+											"description": "Filter posts by PostType ID"
+										},
+										{
+											"key": "postTypeCode",
+											"value": "SHARE",
+											"disabled": true,
+											"description": "Filter posts by PostType code"
+										}
+									]
+								},
+								"description": "Get all posts (via API Gateway). This is a public endpoint - no authentication required. You can filter by postTypeId or postTypeCode."
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{api_gateway_url}}/api/v1/post/create",
-							"host": [
-								"{{api_gateway_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"post",
-								"create"
-							]
+						{
+							"name": "Get Post by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"{{post_id}}"
+									]
+								},
+								"description": "Get post by ID (via API Gateway). This is a public endpoint - no authentication required."
+							},
+							"response": []
 						},
-						"description": "Create a new post (via API Gateway). Requires authentication - JWT token will be validated and user ID will be automatically extracted from the token."
-					},
-					"response": []
+						{
+							"name": "Update Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Updated Post Title\",\n  \"content\": \"This is an updated post content.\",\n  \"postTypeCode\": \"NEWS\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"{{post_id}}"
+									]
+								},
+								"description": "Update post by ID (via API Gateway). Requires authentication - JWT token will be validated and user ID will be automatically extracted. Only the post author or admin can update the post. You can optionally update postTypeId or postTypeCode."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Post",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"{{post_id}}"
+									]
+								},
+								"description": "Delete post by ID (via API Gateway). Requires authentication - JWT token will be validated. Only the post author or admin can delete the post."
+							},
+							"response": []
+						}
+					]
 				},
 				{
-					"name": "Get All Posts",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api_gateway_url}}/api/v1/post",
-							"host": [
-								"{{api_gateway_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"post"
-							]
+					"name": "Post Type Management",
+					"item": [
+						{
+							"name": "Create Post Type",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Bài viết chia sẻ\",\n  \"description\": \"Bài viết chia sẻ kinh nghiệm, kiến thức\",\n  \"code\": \"SHARE\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/post-types",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"post-types"
+									]
+								},
+								"description": "Create a new post type (via API Gateway). Requires ADMIN role authentication. Code must be uppercase with only letters and underscores. Both name and code must be unique. User ID will be automatically recorded as createdBy."
+							},
+							"response": []
 						},
-						"description": "Get all posts (via API Gateway). This is a public endpoint - no authentication required."
-					},
-					"response": []
-				},
-				{
-					"name": "Get Post by ID",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
-							"host": [
-								"{{api_gateway_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"post",
-								"{{post_id}}"
-							]
+						{
+							"name": "Get All Post Types",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/post-types",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"post-types"
+									],
+									"query": [
+										{
+											"key": "isActive",
+											"value": "true",
+											"disabled": true,
+											"description": "Filter by active status (true/false)"
+										}
+									]
+								},
+								"description": "Get all post types (via API Gateway). This is a public endpoint - no authentication required. You can filter by isActive parameter."
+							},
+							"response": []
 						},
-						"description": "Get post by ID (via API Gateway). This is a public endpoint - no authentication required."
-					},
-					"response": []
-				},
-				{
-					"name": "Update Post",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
+						{
+							"name": "Get Post Type by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/post-types/{{post_type_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"post-types",
+										"{{post_type_id}}"
+									]
+								},
+								"description": "Get post type by ID (via API Gateway). This is a public endpoint - no authentication required."
+							},
+							"response": []
 						},
-						"method": "PUT",
-						"header": [
-							{
-								"key": "Content-Type",
-								"value": "application/json"
-							}
-						],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n  \"title\": \"Updated Post Title\",\n  \"content\": \"This is an updated post content.\"\n}"
+						{
+							"name": "Get Post Type by Code",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/post-types/code/{{post_type_code}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"post-types",
+										"code",
+										"{{post_type_code}}"
+									]
+								},
+								"description": "Get post type by code (via API Gateway). This is a public endpoint - no authentication required. Example code: SHARE, NEWS, ADVICE"
+							},
+							"response": []
 						},
-						"url": {
-							"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
-							"host": [
-								"{{api_gateway_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"post",
-								"{{post_id}}"
-							]
+						{
+							"name": "Update Post Type",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"name\": \"Bài viết chia sẻ (Đã cập nhật)\",\n  \"description\": \"Mô tả đã được cập nhật\",\n  \"code\": \"SHARE_UPDATED\",\n  \"isActive\": true\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/post-types/{{post_type_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"post-types",
+										"{{post_type_id}}"
+									]
+								},
+								"description": "Update post type by ID (via API Gateway). Requires ADMIN role authentication. All fields are optional. If updating name or code, they must still be unique. User ID will be automatically recorded as updatedBy."
+							},
+							"response": []
 						},
-						"description": "Update post by ID (via API Gateway). Requires authentication - JWT token will be validated and user ID will be automatically extracted. Only the post author can update the post."
-					},
-					"response": []
-				},
-				{
-					"name": "Delete Post",
-					"request": {
-						"auth": {
-							"type": "bearer",
-							"bearer": [
-								{
-									"key": "token",
-									"value": "{{jwt_token}}",
-									"type": "string"
-								}
-							]
-						},
-						"method": "DELETE",
-						"header": [],
-						"url": {
-							"raw": "{{api_gateway_url}}/api/v1/post/{{post_id}}",
-							"host": [
-								"{{api_gateway_url}}"
-							],
-							"path": [
-								"api",
-								"v1",
-								"post",
-								"{{post_id}}"
-							]
-						},
-						"description": "Delete post by ID (via API Gateway). Requires authentication - JWT token will be validated."
-					},
-					"response": []
+						{
+							"name": "Delete Post Type",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/post/post-types/{{post_type_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"post",
+										"post-types",
+										"{{post_type_id}}"
+									]
+								},
+								"description": "Delete post type by ID (via API Gateway). Requires ADMIN role authentication. Cannot delete a post type that is being used by any posts. Returns 409 Conflict if post type is in use."
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -831,6 +1042,18 @@
 			"value": "",
 			"type": "string",
 			"description": "Post ID for testing post operations"
+		},
+		{
+			"key": "post_type_id",
+			"value": "",
+			"type": "string",
+			"description": "Post Type ID for testing post type operations"
+		},
+		{
+			"key": "post_type_code",
+			"value": "SHARE",
+			"type": "string",
+			"description": "Post Type code for testing (e.g., SHARE, NEWS, ADVICE)"
 		}
 	]
 }
