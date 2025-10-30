@@ -1,14 +1,14 @@
 package com.vita.post_service.dto.request;
 
-import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
 public class UpdatePostRequest {
-    @NotBlank
     private String title;
-
-    @NotBlank
     private String content;
+    
+    // PostType can be updated by ID or Code (one of them)
+    private String postTypeId;
+    private String postTypeCode;
 }
 

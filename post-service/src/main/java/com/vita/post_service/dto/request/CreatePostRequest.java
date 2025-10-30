@@ -5,9 +5,13 @@ import lombok.Data;
 
 @Data
 public class CreatePostRequest {
-    @NotBlank
+    @NotBlank(message = "Title is required")
     private String title;
 
-    @NotBlank
+    @NotBlank(message = "Content is required")
     private String content;
+
+    // PostType can be specified by ID or Code (one of them)
+    private String postTypeId;
+    private String postTypeCode;
 }
