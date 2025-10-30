@@ -17,11 +17,14 @@ import java.util.Optional;
 public class UserService {
 
     private static final Logger log = LoggerFactory.getLogger(UserService.class);
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserProfileMapper userProfileMapper;
 
     @Autowired
-    private UserProfileMapper userProfileMapper;
+    public UserService(UserRepository userRepository, UserProfileMapper userProfileMapper) {
+        this.userRepository = userRepository;
+        this.userProfileMapper = userProfileMapper;
+    }
 
     public UserResponse createUser(UserCreationRequest userCreationRequest) {
 
