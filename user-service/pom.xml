@@ -113,19 +113,40 @@
 				</configuration>
 			</plugin>
 
-			<!-- Spring Boot Maven Plugin -->
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+		<!-- Build Helper Maven Plugin to add generated sources -->
+		<plugin>
+			<groupId>org.codehaus.mojo</groupId>
+			<artifactId>build-helper-maven-plugin</artifactId>
+			<version>3.3.0</version>
+			<executions>
+				<execution>
+					<id>add-source</id>
+					<phase>generate-sources</phase>
+					<goals>
+						<goal>add-source</goal>
+					</goals>
+					<configuration>
+						<sources>
+							<source>${project.build.directory}/generated-sources/annotations</source>
+						</sources>
+					</configuration>
+				</execution>
+			</executions>
+		</plugin>
+
+		<!-- Spring Boot Maven Plugin -->
+		<plugin>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-maven-plugin</artifactId>
+			<configuration>
+				<excludes>
+					<exclude>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok</artifactId>
+					</exclude>
+				</excludes>
+			</configuration>
+		</plugin>
+	</plugins>
+</build>
 </project>
