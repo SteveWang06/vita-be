@@ -79,9 +79,15 @@ public class AuthenticationService {
             if (scope != null && !scope.isEmpty()) {
                 String[] scopes = scope.split(" ");
                 for (String s : scopes) {
+                    // Check if scope starts with ROLE_ (e.g., ROLE_ADMIN)
                     if (s.startsWith("ROLE_")) {
                         role = s;
                         break;
+                    }
+                    // Otherwise, take the first non-empty scope (e.g., ADMIN, USER)
+                    // This handles cases where role name is stored without ROLE_ prefix
+                    if (role == null && !s.trim().isEmpty()) {
+                        role = s.trim();
                     }
                 }
             }

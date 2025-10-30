@@ -18,6 +18,11 @@ public class Post {
     private String userId;
     private String title;
     private String content;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_type_id")
+    private PostType postType;
+    
     private LocalDateTime createdAt;
     private String updatedBy;
     private LocalDateTime updatedAt;
