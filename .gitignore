@@ -33,3 +33,10 @@ Thumbs.db
 *.swp
 *~
 
+# Test/Debug scripts (local development only)
+test-*.sh
+debug-*.sh
+check-*.sh
+restart-*.sh
+quick-test.sh
+

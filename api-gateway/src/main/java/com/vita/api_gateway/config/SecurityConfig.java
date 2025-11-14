@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .pathMatchers("/api/v1/post/**").permitAll()
                 .pathMatchers("/api/v1/posts/**").permitAll()
                 .pathMatchers("/api/v1/admin/**").permitAll()
+                .pathMatchers("/api/v1/rentals/**").permitAll()  // Allow rental service endpoints
                 .pathMatchers("/actuator/**").permitAll()
                 .anyExchange().authenticated()
             )

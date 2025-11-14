@@ -931,6 +931,825 @@
 			]
 		},
 		{
+			"name": "Rental Service",
+			"item": [
+				{
+					"name": "Rental Management",
+					"item": [
+						{
+							"name": "Create Rental",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Modern Apartment in District 1\",\n  \"description\": \"Beautiful 2BR apartment with city view\",\n  \"propertyType\": \"APARTMENT\",\n  \"price\": 12000000,\n  \"city\": \"Ho Chi Minh\",\n  \"district\": \"District 1\",\n  \"address\": \"123 Nguyen Hue Street\",\n  \"bedrooms\": 2,\n  \"bathrooms\": 2,\n  \"area\": 85,\n  \"photos\": \"http://example.com/photo1.jpg,http://example.com/photo2.jpg\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals"
+									]
+								},
+								"description": "Create a new rental listing (via API Gateway). Requires authentication. Owner ID is automatically extracted from JWT token. Property types: APARTMENT, HOUSE, STUDIO, VILLA, ROOM, LAND."
+							},
+							"response": []
+						},
+						{
+							"name": "Get All Rentals",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals"
+									]
+								},
+								"description": "Get all rental listings (via API Gateway). Public endpoint - no authentication required."
+							},
+							"response": []
+						},
+						{
+							"name": "Get My Rentals",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/my",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"my"
+									]
+								},
+								"description": "Get current user's rental listings (via API Gateway). Requires authentication."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Rental by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/{{rental_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"{{rental_id}}"
+									]
+								},
+								"description": "Get rental listing by ID (via API Gateway). Public endpoint - no authentication required."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Rental",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"title\": \"Updated Title\",\n  \"description\": \"Updated description\",\n  \"price\": 15000000,\n  \"bedrooms\": 3\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/{{rental_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"{{rental_id}}"
+									]
+								},
+								"description": "Update rental listing (via API Gateway). Requires authentication. Only owner can update. All fields are optional."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Rental Status",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"RENTED\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/{{rental_id}}/status",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"{{rental_id}}",
+										"status"
+									]
+								},
+								"description": "Update rental status (via API Gateway). Requires authentication. Only owner can update. Statuses: AVAILABLE, RENTED, INACTIVE."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Rental",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/{{rental_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"{{rental_id}}"
+									]
+								},
+								"description": "Delete rental listing (via API Gateway). Requires authentication. Only owner can delete."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Search & Filter",
+					"item": [
+						{
+							"name": "Search Rentals",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/search?city=Ho Chi Minh&district=District 1&propertyType=APARTMENT&minPrice=5000000&maxPrice=20000000&minBedrooms=2&maxBedrooms=3",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"search"
+									],
+									"query": [
+										{
+											"key": "city",
+											"value": "Ho Chi Minh",
+											"description": "Filter by city"
+										},
+										{
+											"key": "district",
+											"value": "District 1",
+											"description": "Filter by district"
+										},
+										{
+											"key": "propertyType",
+											"value": "APARTMENT",
+											"description": "Filter by property type (APARTMENT, HOUSE, STUDIO, VILLA, ROOM, LAND)"
+										},
+										{
+											"key": "minPrice",
+											"value": "5000000",
+											"description": "Minimum price"
+										},
+										{
+											"key": "maxPrice",
+											"value": "20000000",
+											"description": "Maximum price"
+										},
+										{
+											"key": "minBedrooms",
+											"value": "2",
+											"description": "Minimum number of bedrooms"
+										},
+										{
+											"key": "maxBedrooms",
+											"value": "3",
+											"description": "Maximum number of bedrooms"
+										}
+									]
+								},
+								"description": "Search and filter rental listings (via API Gateway). Public endpoint. All parameters are optional. Returns only AVAILABLE rentals."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Rental Request Management",
+					"item": [
+						{
+							"name": "Create Rental Request",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"rentalId\": \"{{rental_id}}\",\n  \"moveInDate\": \"2025-02-01\",\n  \"leaseDurationMonths\": 12,\n  \"message\": \"Hello, I'm interested in renting your property. I'm a working professional looking for long-term rental.\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/requests",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"requests"
+									]
+								},
+								"description": "Send a rental request to property owner (via API Gateway). Requires authentication. Renter ID is automatically extracted from JWT token. Cannot request your own rental. One pending request per rental."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Request by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/requests/{{request_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"requests",
+										"{{request_id}}"
+									]
+								},
+								"description": "Get rental request by ID (via API Gateway). Public endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Get My Requests",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/requests/my",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"requests",
+										"my"
+									]
+								},
+								"description": "Get current user's rental requests (via API Gateway). Requires authentication."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Requests for Rental",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/{{rental_id}}/requests",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"{{rental_id}}",
+										"requests"
+									]
+								},
+								"description": "Get all requests for a rental (via API Gateway). Requires authentication. Only rental owner can access."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Request Status (Owner)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"ACCEPTED\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/requests/{{request_id}}/status",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"requests",
+										"{{request_id}}",
+										"status"
+									]
+								},
+								"description": "Update rental request status (via API Gateway). Requires authentication. Only rental owner can update. Statuses: ACCEPTED, REJECTED. For REJECTED, include rejectionReason field."
+							},
+							"response": []
+						},
+						{
+							"name": "Reject Request with Reason",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"REJECTED\",\n  \"rejectionReason\": \"The property is no longer available for the requested dates. Please check our other listings.\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/requests/{{request_id}}/status",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"requests",
+										"{{request_id}}",
+										"status"
+									]
+								},
+								"description": "Reject rental request with reason (via API Gateway). Requires authentication. Only rental owner can reject."
+							},
+							"response": []
+						},
+						{
+							"name": "Cancel Request (Renter)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/requests/{{request_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"requests",
+										"{{request_id}}"
+									]
+								},
+								"description": "Cancel rental request (via API Gateway). Requires authentication. Only the renter who created the request can cancel. Can only cancel PENDING requests."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Review Management",
+					"item": [
+						{
+							"name": "Create Review",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"rating\": 5,\n  \"comment\": \"Excellent property! Very clean and well-maintained. The owner was very responsive and helpful. Highly recommended!\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/{{rental_id}}/reviews",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"{{rental_id}}",
+										"reviews"
+									]
+								},
+								"description": "Create a review for a rental (via API Gateway). Requires authentication. Reviewer ID is automatically extracted from JWT token. Rating must be 1-5. Cannot review your own rental."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Reviews for Rental",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/{{rental_id}}/reviews",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"{{rental_id}}",
+										"reviews"
+									]
+								},
+								"description": "Get all reviews for a rental (via API Gateway). Public endpoint. Returns reviews ordered by creation date (newest first)."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Review by ID",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/reviews/{{review_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"reviews",
+										"{{review_id}}"
+									]
+								},
+								"description": "Get review by ID (via API Gateway). Public endpoint."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Average Rating",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/{{rental_id}}/reviews/average",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"{{rental_id}}",
+										"reviews",
+										"average"
+									]
+								},
+								"description": "Get average rating for a rental (via API Gateway). Public endpoint. Returns 0 if no reviews."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Review",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"rating\": 4,\n  \"comment\": \"Updated review: Good property overall, but could use some minor improvements.\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/reviews/{{review_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"reviews",
+										"{{review_id}}"
+									]
+								},
+								"description": "Update review (via API Gateway). Requires authentication. Only the reviewer can update. Rating must be 1-5."
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Review",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/reviews/{{review_id}}",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"reviews",
+										"{{review_id}}"
+									]
+								},
+								"description": "Delete review (via API Gateway). Requires authentication. Only the reviewer can delete."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Admin Management",
+					"item": [
+						{
+							"name": "Get All Rentals (Admin)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/admin?page=0&size=20",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"admin"
+									],
+									"query": [
+										{
+											"key": "page",
+											"value": "0",
+											"description": "Page number (0-based)"
+										},
+										{
+											"key": "size",
+											"value": "20",
+											"description": "Page size"
+										}
+									]
+								},
+								"description": "Get all rentals with pagination (via API Gateway). Requires ADMIN role authentication."
+							},
+							"response": []
+						},
+						{
+							"name": "Update Rental Status (Admin)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{jwt_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"status\": \"INACTIVE\"\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/rentals/admin/{{rental_id}}/status",
+									"host": [
+										"{{api_gateway_url}}"
+									],
+									"path": [
+										"api",
+										"v1",
+										"rentals",
+										"admin",
+										"{{rental_id}}",
+										"status"
+									]
+								},
+								"description": "Update any rental status (via API Gateway). Requires ADMIN role authentication. Statuses: AVAILABLE, RENTED, INACTIVE, PENDING_APPROVAL, REJECTED."
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "API Gateway",
 			"item": [
 				{
@@ -1054,6 +1873,30 @@
 			"value": "SHARE",
 			"type": "string",
 			"description": "Post Type code for testing (e.g., SHARE, NEWS, ADVICE)"
+		},
+		{
+			"key": "rental_service_url",
+			"value": "http://localhost:8084",
+			"type": "string",
+			"description": "Direct Rental Service URL (for reference only - use API Gateway instead)"
+		},
+		{
+			"key": "rental_id",
+			"value": "",
+			"type": "string",
+			"description": "Rental ID for testing rental operations"
+		},
+		{
+			"key": "request_id",
+			"value": "",
+			"type": "string",
+			"description": "Rental Request ID for testing request operations"
+		},
+		{
+			"key": "review_id",
+			"value": "",
+			"type": "string",
+			"description": "Review ID for testing review operations"
 		}
 	]
 }

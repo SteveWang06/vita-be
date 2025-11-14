@@ -1,0 +1,48 @@
+package com.vita.rental_service.dto.request;
+
+import com.vita.rental_service.domain.enums.PropertyType;
+import jakarta.validation.constraints.*;
+import lombok.Data;
+
+import java.math.BigDecimal;
+
+@Data
+public class CreateRentalRequest {
+    
+    @NotBlank(message = "Title is required")
+    @Size(max = 200, message = "Title must not exceed 200 characters")
+    private String title;
+    
+    @NotBlank(message = "Description is required")
+    private String description;
+    
+    @NotNull(message = "Property type is required")
+    private PropertyType propertyType;
+    
+    @NotNull(message = "Price is required")
+    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than 0")
+    private BigDecimal price;
+    
+    @NotBlank(message = "City is required")
+    @Size(max = 100, message = "City must not exceed 100 characters")
+    private String city;
+    
+    @NotBlank(message = "District is required")
+    @Size(max = 100, message = "District must not exceed 100 characters")
+    private String district;
+    
+    @Size(max = 255, message = "Address must not exceed 255 characters")
+    private String address;
+    
+    @Min(value = 0, message = "Bedrooms must be non-negative")
+    private Integer bedrooms;
+    
+    @Min(value = 0, message = "Bathrooms must be non-negative")
+    private Integer bathrooms;
+    
+    @Min(value = 1, message = "Area must be at least 1 square meter")
+    private Integer area;
+    
+    private String photos; // Comma-separated URLs
+}
+
