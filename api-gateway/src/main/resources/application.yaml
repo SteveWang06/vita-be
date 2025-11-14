@@ -120,13 +120,14 @@ resilience4j:
 
 logging:
   level:
-    org.springframework.cloud.gateway: INFO      # Changed to INFO for production
-    org.springframework.web.reactive: INFO       # Changed to INFO for production
-    reactor.netty: INFO                          # Changed to INFO for production
-    com.vita.api_gateway.filter: INFO            # Our custom filters
-    com.vita.api_gateway.service: INFO           # Our services
+    org.springframework.cloud.gateway: DEBUG     # Changed to DEBUG for troubleshooting
+    org.springframework.web.reactive: DEBUG      # Changed to DEBUG for troubleshooting
+    reactor.netty: INFO                          # Keep INFO
+    com.vita.api_gateway.filter: DEBUG           # Our custom filters - DEBUG
+    com.vita.api_gateway.service: DEBUG          # Our services - DEBUG
+    com.vita.api_gateway: DEBUG                  # All our code - DEBUG
   pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
   file:
     name: logs/api-gateway.log
     max-size: 10MB

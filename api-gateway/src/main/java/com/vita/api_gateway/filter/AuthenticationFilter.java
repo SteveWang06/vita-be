@@ -29,17 +29,26 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
         String path = request.getPath().value();
         HttpMethod method = request.getMethod();
         
+        log.info("=== AuthenticationFilter: Incoming request === Path: {}, Method: {}", path, method);
+        
         // Skip authentication for public endpoints
         if (isPublicEndpoint(path, method)) {
+            log.info("=== Public endpoint detected, skipping authentication === Path: {}", path);
             return chain.filter(exchange);
         }
+        
+        log.info("=== Protected endpoint, checking authentication === Path: {}", path);
 
         String authHeader = request.getHeaders().getFirst("Authorization");
+        log.info("=== Authorization header: {} ===", authHeader != null ? "Present (Bearer ...)" : "MISSING");
+        
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            log.warn("=== UNAUTHORIZED: Missing or invalid Authorization header ===");
             return onError(exchange, "Missing or invalid Authorization header", HttpStatus.UNAUTHORIZED);
         }
 
         String token = authHeader.substring(7);
+        log.info("=== Validating token (first 20 chars): {}... ===", token.substring(0, Math.min(20, token.length())));
 
         return tokenValidationService.validateToken(token)
                 .flatMap(userInfo -> {
@@ -55,7 +64,9 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                     return chain.filter(exchange.mutate().request(mutatedRequest).build());
                 })
                 .onErrorResume(e -> {
-                    log.warn("Token validation failed for path {}: {}", path, e.getMessage());
+                    log.error("=== TOKEN VALIDATION FAILED === Path: {}, Error: {}, Type: {}", 
+                            path, e.getMessage(), e.getClass().getSimpleName());
+                    e.printStackTrace(); // Print full stack trace for debugging
                     return onError(exchange, "Invalid Token", HttpStatus.UNAUTHORIZED);
                 });
     }
@@ -75,10 +86,25 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return true;
         }
         
+        // Allow GET requests for rentals (read-only operations are public)
+        // Includes: get all rentals, get by ID, search, get reviews, get average rating
+        // POST/PUT/PATCH/DELETE require authentication
+        // EXCEPT: /api/v1/rentals/admin/** endpoints (always require authentication)
+        if (path.startsWith("/api/v1/rentals") && HttpMethod.GET.equals(method)) {
+            // Admin endpoints always require authentication
+            if (path.startsWith("/api/v1/rentals/admin")) {
+                return false;
+            }
+            return true;
+        }
+        
         return false;
     }
 
     private Mono<Void> onError(ServerWebExchange exchange, String message, HttpStatus status) {
+        log.error("=== SENDING ERROR RESPONSE === Status: {}, Message: {}, Path: {}", 
+                status, message, exchange.getRequest().getPath().value());
+        
         ServerHttpResponse response = exchange.getResponse();
         response.setStatusCode(status);
         response.getHeaders().add("Content-Type", "application/json");
