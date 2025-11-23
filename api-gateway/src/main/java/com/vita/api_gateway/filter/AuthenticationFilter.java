@@ -80,6 +80,14 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
             return true;
         }
         
+        // Allow Swagger/OpenAPI endpoints for all services
+        if (path.contains("/swagger-ui") || 
+            path.contains("/api-docs") ||
+            path.contains("/swagger-resources") ||
+            path.contains("/webjars/")) {
+            return true;
+        }
+        
         // Allow GET requests for posts (read-only operations are public)
         // POST/PUT/DELETE require authentication
         if (path.startsWith("/api/v1/post") && HttpMethod.GET.equals(method)) {
@@ -96,6 +104,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
                 return false;
             }
             return true;
+        }
+        
+        // Media service endpoints - all require authentication
+        // Presigned URL, upload confirmation, delete all need user authentication
+        if (path.startsWith("/api/v1/media")) {
+            return false;
         }
         
         return false;

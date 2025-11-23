@@ -43,6 +43,10 @@ public class GatewayConfig {
                         .path("/api/v1/rentals/**")
                         .filters(f -> f.stripPrefix(2))
                         .uri("http://localhost:8084"))
+                .route("media_service", r -> r
+                        .path("/api/v1/media/**")
+                        .filters(f -> f.stripPrefix(2))
+                        .uri("http://localhost:8085"))
                 .build();
     }
     

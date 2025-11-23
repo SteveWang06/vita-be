@@ -1791,6 +1791,304 @@
 					"response": []
 				}
 			]
+		},
+		{
+			"name": "Media Service",
+			"item": [
+				{
+					"name": "Upload Management",
+					"item": [
+						{
+							"name": "Request Presigned URL (Image)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "JWT token required"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"fileName\": \"profile-photo.jpg\",\n  \"fileType\": \"image/jpeg\",\n  \"fileSize\": 1048576\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media/upload-request",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media", "upload-request"]
+								},
+								"description": "Request presigned URL for uploading an image to S3. Returns uploadUrl for direct S3 upload and fileId for confirmation."
+							},
+							"response": []
+						},
+						{
+							"name": "Request Presigned URL (Video)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "JWT token required"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"fileName\": \"property-tour.mp4\",\n  \"fileType\": \"video/mp4\",\n  \"fileSize\": 52428800\n}"
+								},
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media/upload-request",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media", "upload-request"]
+								},
+								"description": "Request presigned URL for uploading a video to S3. Max size: 100MB."
+							},
+							"response": []
+						},
+						{
+							"name": "Confirm Upload",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									},
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "JWT token required"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media/{{file_id}}/confirm",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media", "{{file_id}}", "confirm"]
+								},
+								"description": "Confirm that file has been uploaded to S3. This verifies the file exists and marks upload as COMPLETED."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Media Management",
+					"item": [
+						{
+							"name": "Get Media by ID",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "JWT token required"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media/{{file_id}}",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media", "{{file_id}}"]
+								},
+								"description": "Get media details by file ID"
+							},
+							"response": []
+						},
+						{
+							"name": "Get User's Media (All)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "JWT token required"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media?page=0&size=20",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media"],
+									"query": [
+										{
+											"key": "page",
+											"value": "0",
+											"description": "Page number (0-based)"
+										},
+										{
+											"key": "size",
+											"value": "20",
+											"description": "Page size"
+										}
+									]
+								},
+								"description": "Get all media uploaded by current user with pagination"
+							},
+							"response": []
+						},
+						{
+							"name": "Get User's Media (Images Only)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "JWT token required"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media?type=IMAGE&page=0&size=20",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media"],
+									"query": [
+										{
+											"key": "type",
+											"value": "IMAGE",
+											"description": "Filter by media type: IMAGE or VIDEO"
+										},
+										{
+											"key": "page",
+											"value": "0",
+											"description": "Page number (0-based)"
+										},
+										{
+											"key": "size",
+											"value": "20",
+											"description": "Page size"
+										}
+									]
+								},
+								"description": "Get only images uploaded by current user"
+							},
+							"response": []
+						},
+						{
+							"name": "Get User's Media (Videos Only)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "JWT token required"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media?type=VIDEO&page=0&size=20",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media"],
+									"query": [
+										{
+											"key": "type",
+											"value": "VIDEO",
+											"description": "Filter by media type: IMAGE or VIDEO"
+										},
+										{
+											"key": "page",
+											"value": "0",
+											"description": "Page number (0-based)"
+										},
+										{
+											"key": "size",
+											"value": "20",
+											"description": "Page size"
+										}
+									]
+								},
+								"description": "Get only videos uploaded by current user"
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Media",
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "JWT token required"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media/{{file_id}}",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media", "{{file_id}}"]
+								},
+								"description": "Delete media file. Only owner or ADMIN can delete."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Admin Management",
+					"item": [
+						{
+							"name": "Get All Media (Admin)",
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "Admin JWT token required"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media/admin?page=0&size=20",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media", "admin"],
+									"query": [
+										{
+											"key": "page",
+											"value": "0",
+											"description": "Page number (0-based)"
+										},
+										{
+											"key": "size",
+											"value": "20",
+											"description": "Page size"
+										}
+									]
+								},
+								"description": "Get all media from all users (Admin only)"
+							},
+							"response": []
+						},
+						{
+							"name": "Cleanup Expired Uploads (Admin)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer {{jwt_token}}",
+										"description": "Admin JWT token required"
+									}
+								],
+								"url": {
+									"raw": "{{api_gateway_url}}/api/v1/media/admin/cleanup",
+									"host": ["{{api_gateway_url}}"],
+									"path": ["api", "v1", "media", "admin", "cleanup"]
+								},
+								"description": "Cleanup expired pending uploads (Admin only). Marks expired uploads as FAILED."
+							},
+							"response": []
+						}
+					]
+				}
+			]
 		}
 	],
 	"event": [
@@ -1897,6 +2195,18 @@
 			"value": "",
 			"type": "string",
 			"description": "Review ID for testing review operations"
+		},
+		{
+			"key": "media_service_url",
+			"value": "http://localhost:8085",
+			"type": "string",
+			"description": "Direct Media Service URL (for reference only - use API Gateway instead)"
+		},
+		{
+			"key": "file_id",
+			"value": "",
+			"type": "string",
+			"description": "File/Media ID for testing media operations"
 		}
 	]
 }
