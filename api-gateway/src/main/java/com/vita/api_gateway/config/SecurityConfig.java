@@ -31,6 +31,8 @@ public class SecurityConfig {
                 .pathMatchers("/api/v1/admin/**").permitAll()
                 .pathMatchers("/api/v1/rentals/**").permitAll()  // Allow rental service endpoints
                 .pathMatchers("/actuator/**").permitAll()
+                // Swagger/OpenAPI endpoints
+                .pathMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**", "/swagger-resources/**", "/webjars/**", "/v3/api-docs/**").permitAll()
                 .anyExchange().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.disable())
